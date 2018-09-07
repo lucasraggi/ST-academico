@@ -35,7 +35,7 @@ public class MyResource {
         
         log.info("getAll");
         
-        return Response.ok("[]").build();
+        return Response.ok(personDAO.getAll()).build();
     }
     
     @GET
@@ -58,7 +58,7 @@ public class MyResource {
         log.info("save: {}", entity);
         
         Person p = new Person(entity.getName());
-        p.setScore(entity.getNumber());
+//        p.setScore(entity.getScore());
         
         return Response.ok(personDAO.persist(p)).build();
     }
@@ -70,8 +70,11 @@ public class MyResource {
     public Response update(@PathParam("id") Long id, PersonDTO entity) {
         
         log.info("update: id={}, {}", id, entity);
-        
-        // TODO update
+
+        Person p = personDAO.get(id);
+        p.setName(entity.getName());
+//        p.setScore(entity.getScore());
+        personDAO.persist(p);
         
         return Response.ok(entity).build();
     }
@@ -83,7 +86,8 @@ public class MyResource {
         
         log.info("delete: id={}", id);
         
-        // TODO delete
+        Person p = personDAO.get(id);
+        personDAO.delete(p);
         
         return Response.status(Response.Status.NO_CONTENT).build();
     }
@@ -93,8 +97,7 @@ public class MyResource {
     @AllArgsConstructor
     @ToString
     public static class PersonDTO {
-        
         private String name;
-        private int number;
+        private int score;
     }
 }

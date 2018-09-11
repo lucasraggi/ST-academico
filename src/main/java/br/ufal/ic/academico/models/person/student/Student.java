@@ -1,7 +1,7 @@
-package br.ufal.ic.academico.person.student;
+package br.ufal.ic.academico.models.person.student;
 
 
-import br.ufal.ic.academico.person.Person;
+import br.ufal.ic.academico.models.person.Person;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

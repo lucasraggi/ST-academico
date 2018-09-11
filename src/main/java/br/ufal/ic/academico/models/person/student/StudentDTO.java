@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.person.student;
+package br.ufal.ic.academico.models.person.student;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

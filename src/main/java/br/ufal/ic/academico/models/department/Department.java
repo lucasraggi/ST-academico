@@ -1,6 +1,6 @@
-package br.ufal.ic.academico.department;
+package br.ufal.ic.academico.models.department;
 
-import br.ufal.ic.academico.secretary.Secretary;
+import br.ufal.ic.academico.models.secretary.Secretary;
 import lombok.Getter;
 import lombok.Setter;
 

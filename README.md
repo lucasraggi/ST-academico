@@ -12,6 +12,7 @@
 - Path: /enrollment/<student_pk>/<discipline_pk>
 - Mathod: POST
 > deve informar se o aluno foi matriculado ou não, justificando nesse ultimo caso
+---
 
 ### Requisito 3
 - Path: /departament/<departament_pk>/<secretary_pk>
@@ -25,3 +26,4 @@
 - Path: /enrollment/proof/<student_pk>
 - Method: GET
 > retorna o comprovante de matrícula do aluno, ou seja, uma lista com seu nome e número de matrícula, e com os códigos e nomes das disciplinas nas quais o aluno está matriculado
+---

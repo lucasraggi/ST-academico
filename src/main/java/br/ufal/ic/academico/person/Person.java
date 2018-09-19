@@ -1,6 +1,5 @@
 package br.ufal.ic.academico.person;
 
-import br.ufal.ic.academico.person.student.StudentDTO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

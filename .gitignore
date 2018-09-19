@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# Databases
+*.db
+
 # Log file
 *.log
 

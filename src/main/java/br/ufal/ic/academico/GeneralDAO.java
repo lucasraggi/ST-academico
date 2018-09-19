@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Slf4j
 public abstract class GeneralDAO<T> extends AbstractDAO<T> {
@@ -27,4 +28,6 @@ public abstract class GeneralDAO<T> extends AbstractDAO<T> {
     public void delete(T entity) throws HibernateException {
         super.currentSession().delete(entity);
     }
+
+    abstract public ArrayList<T> getAll();
 }

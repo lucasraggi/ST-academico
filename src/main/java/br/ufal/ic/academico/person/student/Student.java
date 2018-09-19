@@ -1,12 +1,12 @@
 package br.ufal.ic.academico.person.student;
 
-
-import br.ufal.ic.academico.person.Person;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+
+import br.ufal.ic.academico.person.Person;
 
 @Entity
 @Getter

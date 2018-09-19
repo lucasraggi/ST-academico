@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.department;
+package br.ufal.ic.academico.models.department;
 
 import br.ufal.ic.academico.GeneralDAO;
 import lombok.extern.slf4j.Slf4j;

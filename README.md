@@ -19,8 +19,8 @@
 - Method: GET
 > lista todas as disciplinas sendo ofertadas, com seus nomes, códigos, números de créditos, os códigos dos pré-requisitos e os números de créditos mínimos
 ---
-- Path: /departament/<departament_pk>/<secretary_pk>
-- Method: GET/<discipline_pk>
+- Path: /departament/<departament_pk>/<secretary_pk>/<discipline_pk>
+- Method: GET
 > lista o código, número de créditos, os códigos dos pré-requisitos, o número de créditos mínimo, o nome da disciplina, o nome do professor responsável e a lista de alunos matriculados (com seus nomes e números de matrícula)
 ---
 - Path: /enrollment/proof/<student_pk>

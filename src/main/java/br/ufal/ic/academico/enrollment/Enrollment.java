@@ -1,8 +1,8 @@
 package br.ufal.ic.academico.enrollment;
 
-import br.ufal.ic.academico.person.student.Student;
-import br.ufal.ic.academico.person.student.StudentDAO;
-import br.ufal.ic.academico.person.student.StudentDTO;
+import br.ufal.ic.academico.models.person.student.Student;
+import br.ufal.ic.academico.models.person.student.StudentDAO;
+import br.ufal.ic.academico.models.person.student.StudentDTO;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

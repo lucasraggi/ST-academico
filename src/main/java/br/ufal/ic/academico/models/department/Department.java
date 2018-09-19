@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.person;
+package br.ufal.ic.academico.models.department;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,15 +12,15 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @RequiredArgsConstructor
-public class Person {
+public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Setter
-    protected String name;
+    private String name;
 
-    public Person(String name) {
+    Department(String name) {
         this.name = name;
     }
 }

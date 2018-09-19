@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.person.student;
+package br.ufal.ic.academico.models.person.student;
 
 import br.ufal.ic.academico.GeneralDAO;
 import lombok.extern.slf4j.Slf4j;

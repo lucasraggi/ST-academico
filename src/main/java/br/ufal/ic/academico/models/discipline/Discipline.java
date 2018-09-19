@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.discipline;
+package br.ufal.ic.academico.models.discipline;
 
 import lombok.Getter;
 import lombok.Setter;

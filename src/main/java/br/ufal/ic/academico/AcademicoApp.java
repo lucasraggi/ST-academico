@@ -1,11 +1,14 @@
 package br.ufal.ic.academico;
 
-import br.ufal.ic.academico.enrollment.Enrollment;
 import br.ufal.ic.academico.exemplos.MyResource;
 import br.ufal.ic.academico.exemplos.Person;
 import br.ufal.ic.academico.exemplos.PersonDAO;
+import br.ufal.ic.academico.models.department.Department;
+import br.ufal.ic.academico.models.department.DepartmentDAO;
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
+import br.ufal.ic.academico.models.secretary.Secretary;
+import br.ufal.ic.academico.models.secretary.SecretaryDAO;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -40,16 +43,20 @@ public class AcademicoApp extends Application<ConfigApp> {
         
         final PersonDAO dao = new PersonDAO(hibernate.getSessionFactory());
         final StudentDAO studentDAO = new StudentDAO(hibernate.getSessionFactory());
+        final DepartmentDAO departmentDAO = new DepartmentDAO(hibernate.getSessionFactory());
+        final SecretaryDAO secretaryDAO = new SecretaryDAO(hibernate.getSessionFactory());
 
         final MyResource resource = new MyResource(dao);
-        final Enrollment enrollment = new Enrollment(studentDAO);
-        
+        final EnrollmentResources enrollmentResources = new EnrollmentResources(studentDAO);
+        final DepartmentResources departmentResources = new DepartmentResources(departmentDAO, secretaryDAO);
+
         environment.jersey().register(resource);
-        environment.jersey().register(enrollment);
+        environment.jersey().register(enrollmentResources);
+        environment.jersey().register(departmentResources);
     }
 
     private final HibernateBundle<ConfigApp> hibernate
-            = new HibernateBundle<ConfigApp>(Person.class, Student.class) {
+            = new HibernateBundle<ConfigApp>(Person.class, Student.class, Department.class, Secretary.class) {
 
         @Override
         public DataSourceFactory getDataSourceFactory(ConfigApp configuration) {

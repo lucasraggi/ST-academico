@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.enrollment;
+package br.ufal.ic.academico;
 
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 @Slf4j
 @RequiredArgsConstructor
 @Produces(MediaType.APPLICATION_JSON)
-public class Enrollment {
+public class EnrollmentResources {
     private final StudentDAO studentDAO;
 
     @GET
@@ -29,7 +29,7 @@ public class Enrollment {
     @UnitOfWork
     @Consumes("application/json")
     public Response createStudent(StudentDTO entity) {
-        log.info("new student: {}", entity);
+        log.info("create student: {}", entity);
 
         Student s = new Student(entity);
         return Response.ok(studentDAO.persist(s)).build();

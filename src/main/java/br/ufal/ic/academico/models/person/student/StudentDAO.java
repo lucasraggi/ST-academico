@@ -1,6 +1,6 @@
 package br.ufal.ic.academico.models.person.student;
 
-import br.ufal.ic.academico.GeneralDAO;
+import br.ufal.ic.academico.models.GeneralDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 

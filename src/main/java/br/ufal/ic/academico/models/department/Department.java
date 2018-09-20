@@ -1,13 +1,11 @@
 package br.ufal.ic.academico.models.department;
 
+import br.ufal.ic.academico.models.secretary.Secretary;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,9 +16,17 @@ public class Department {
     private Long id;
 
     @Setter
-    private String name;
+    String name;
 
-    Department(String name) {
-        this.name = name;
+    @OneToOne
+    @Setter
+    Secretary graduation, postGraduation;
+
+    public Department(DepartmentDTO entity) {
+        this.name = entity.name;
+    }
+
+    public void update(DepartmentDTO entity) {
+        this.name = entity.name;
     }
 }

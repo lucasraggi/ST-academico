@@ -1,4 +1,4 @@
-package br.ufal.ic.academico;
+package br.ufal.ic.academico.models;
 
 import io.dropwizard.hibernate.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;

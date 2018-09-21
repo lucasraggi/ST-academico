@@ -20,7 +20,11 @@ public class Person {
     @Setter
     protected String name;
 
-    public Person(String name) {
+    @Setter
+    protected String role;
+
+    public Person(String name, String role) {
         this.name = name;
+        this.role = role.toUpperCase().equals("STUDENT") ? "STUDENT" : "TEACHER";
     }
 }

@@ -33,7 +33,9 @@ public class Course {
         if (entity.name != null) {
             this.name = entity.name;
         }
-        this.disciplines = disciplineDTOListToDisciplineList(entity.disciplines);
+        if (entity.disciplines != null) {
+            this.disciplines = disciplineDTOListToDisciplineList(entity.disciplines);
+        }
     }
 
     private List<Discipline> disciplineDTOListToDisciplineList(List<DisciplineDTO> disciplineDTOs) {
@@ -42,5 +44,13 @@ public class Course {
             disciplineDTOs.forEach(d -> disciplines.add(new Discipline(d)));
         }
         return disciplines;
+    }
+
+    public void addDiscipline(Discipline discipline) {
+        this.disciplines.add(discipline);
+    }
+
+    public void deleteDiscipline(Discipline d) {
+        this.disciplines.remove(d);
     }
 }

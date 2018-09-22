@@ -69,7 +69,6 @@ public class DepartmentResources {
     @DELETE
     @Path("/{id}")
     @UnitOfWork
-    @Consumes("application/json")
     public Response delete(@PathParam("id") Long id) {
         log.info("delete department: id={}", id);
 
@@ -81,7 +80,6 @@ public class DepartmentResources {
     @GET
     @Path("/{id}/secretary")
     @UnitOfWork
-    @Consumes("application/json")
     public Response getAllSecretariesFromDepartment(@PathParam("id") Long id) {
         log.info("getAll secretaries from department {}", id);
 

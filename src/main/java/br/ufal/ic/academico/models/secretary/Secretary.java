@@ -31,7 +31,9 @@ public class Secretary {
         if (entity.type != null) {
             this.type = entity.type;
         }
-        this.courses = coursesDTOListToCoursesList(entity.courses);
+        if (entity.courses != null) {
+            this.courses = coursesDTOListToCoursesList(entity.courses);
+        }
     }
 
     private LinkedList<Course> coursesDTOListToCoursesList(List<CourseDTO> courseDTOs) {

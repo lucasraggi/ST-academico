@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class Discipline {
 
     @Getter
     @Setter
-    int credits, requiredCredits;
+    Integer credits, requiredCredits;
 
     @Getter
     @Setter
@@ -30,11 +31,39 @@ public class Discipline {
 
     public Discipline(DisciplineDTO entity) {
         this.name = entity.name;
-        this.credits = entity.credits;
-        this.requiredCredits = entity.requiredCredits;
+        if (entity.credits != null) {
+            this.credits = entity.credits;
+        } else {
+            this.credits = 0;
+        }
+        if (entity.requiredCredits != null) {
+            this.requiredCredits = entity.requiredCredits;
+        } else {
+            this.requiredCredits = 0;
+        }
+        this.requiredDisciplines = disciplineDTOListToDisciplineList(entity.requiredDisciplines);
+    }
 
-        LinkedList<Discipline> requiredDisciplines = new LinkedList<>();
-        entity.requiredDisciplines.forEach(d -> requiredDisciplines.add(new Discipline(d)));
-        this.requiredDisciplines = requiredDisciplines;
+    public void update(DisciplineDTO entity) {
+        if (entity.name != null) {
+            name = entity.name;
+        }
+        if (entity.credits != null) {
+            credits = entity.credits;
+        }
+        if (entity.requiredCredits != null) {
+            requiredCredits = entity.requiredCredits;
+        }
+        if (entity.requiredDisciplines != null) {
+            requiredDisciplines = disciplineDTOListToDisciplineList(entity.requiredDisciplines);
+        }
+    }
+
+    private List<Discipline> disciplineDTOListToDisciplineList(List<DisciplineDTO> disciplineDTOs) {
+        ArrayList<Discipline> disciplines = new ArrayList<>();
+        if (disciplineDTOs != null) {
+            disciplineDTOs.forEach(d -> disciplines.add(new Discipline(d)));
+        }
+        return disciplines;
     }
 }

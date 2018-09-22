@@ -5,7 +5,6 @@ import br.ufal.ic.academico.models.secretary.Secretary;
 import org.hibernate.SessionFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CourseDAO extends GeneralDAO<Course> {
     public CourseDAO(SessionFactory sessionFactory) {
@@ -18,7 +17,7 @@ public class CourseDAO extends GeneralDAO<Course> {
     }
 
     public Secretary getSecretary(Course course) {
-        List<Secretary> secretaries = (List<Secretary>)  currentSession().createQuery("from Secretary").list();
+        ArrayList<Secretary> secretaries = (ArrayList<Secretary>)  currentSession().createQuery("from Secretary").list();
         for (Secretary s : secretaries) {
             for (Course c : s.getCourses()) {
                 if (c.getId().equals(course.getId())) {

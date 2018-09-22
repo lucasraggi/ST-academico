@@ -8,6 +8,7 @@ import br.ufal.ic.academico.models.course.CourseDAO;
 import br.ufal.ic.academico.models.department.Department;
 import br.ufal.ic.academico.models.department.DepartmentDAO;
 import br.ufal.ic.academico.models.discipline.Discipline;
+import br.ufal.ic.academico.models.discipline.DisciplineDAO;
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
 import br.ufal.ic.academico.models.person.teacher.Teacher;
@@ -51,18 +52,21 @@ public class AcademicoApp extends Application<ConfigApp> {
         final DepartmentDAO departmentDAO = new DepartmentDAO(hibernate.getSessionFactory());
         final SecretaryDAO secretaryDAO = new SecretaryDAO(hibernate.getSessionFactory());
         final CourseDAO courseDAO = new CourseDAO(hibernate.getSessionFactory());
+        final DisciplineDAO disciplineDAO = new DisciplineDAO(hibernate.getSessionFactory());
 
         final MyResource resource = new MyResource(dao);
         final EnrollmentResources enrollmentResources = new EnrollmentResources(studentDAO, teacherDAO, courseDAO);
         final DepartmentResources departmentResources = new DepartmentResources(departmentDAO, secretaryDAO, courseDAO);
         final SecretaryResources secretaryResources = new SecretaryResources(departmentDAO, secretaryDAO, courseDAO);
-        final CourseResources courseResources = new CourseResources(secretaryDAO, courseDAO);
+        final CourseResources courseResources = new CourseResources(secretaryDAO, courseDAO, disciplineDAO);
+        final DisciplineResources disciplineResources = new DisciplineResources(courseDAO, disciplineDAO);
 
         environment.jersey().register(resource);
         environment.jersey().register(enrollmentResources);
         environment.jersey().register(departmentResources);
         environment.jersey().register(secretaryResources);
         environment.jersey().register(courseResources);
+        environment.jersey().register(disciplineResources);
     }
 
     private final HibernateBundle<ConfigApp> hibernate

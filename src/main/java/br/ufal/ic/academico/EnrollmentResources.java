@@ -69,7 +69,6 @@ public class EnrollmentResources {
     @DELETE
     @Path("/student/{id}")
     @UnitOfWork
-    @Consumes("application/json")
     public Response deleteStudent(@PathParam("id") Long id) {
         log.info("delete student: id={}", id);
 
@@ -122,7 +121,6 @@ public class EnrollmentResources {
     @DELETE
     @Path("/teacher/{id}")
     @UnitOfWork
-    @Consumes("application/json")
     public Response deleteTeacher(@PathParam("id") Long id) {
         log.info("delete teacher: id={}", id);
 

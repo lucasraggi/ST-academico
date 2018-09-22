@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 public class DisciplineDTO {
     String name;
-    int credits, requiredCredits = 0;
+    Integer credits = 0, requiredCredits = 0;
     List<DisciplineDTO> requiredDisciplines;
 
     public DisciplineDTO(Discipline entity) {

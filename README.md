@@ -15,11 +15,11 @@
 ---
 
 ### Requisito 3
-- *Path:* /departament/<departament_pk>/secretary/<secretary_pk>/discipline
+- *Path:* /secretary/<secretary_pk>/discipline
 - *Method:* GET
 > lista todas as disciplinas sendo ofertadas, com seus nomes, códigos, números de créditos, os códigos dos pré-requisitos e os números de créditos mínimos
 ---
-- *Path:* /departament/<departament_pk>/secretary/<secretary_pk>/discipline/<discipline_pk>
+- *Path:* /discipline/<discipline_pk>
 - *Method:* GET
 > lista o código, número de créditos, os códigos dos pré-requisitos, o número de créditos mínimo, o nome da disciplina, o nome do professor responsável e a lista de alunos matriculados (com seus nomes e números de matrícula)
 ---

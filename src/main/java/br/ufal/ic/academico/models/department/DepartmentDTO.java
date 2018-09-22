@@ -16,7 +16,11 @@ public class DepartmentDTO {
 
     public DepartmentDTO(Department entity) {
         this.name = entity.name;
-        this.gradution = new SecretaryDTO(entity.graduation);
-        this.postGraduation = new SecretaryDTO(entity.postGraduation);
+        if (entity.graduation != null) {
+            this.gradution = new SecretaryDTO(entity.graduation);
+        }
+        if (entity.postGraduation != null) {
+            this.postGraduation = new SecretaryDTO(entity.postGraduation);
+        }
     }
 }

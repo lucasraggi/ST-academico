@@ -82,7 +82,7 @@ public class DepartmentResources {
     @Path("/{id}/secretary")
     @UnitOfWork
     @Consumes("application/json")
-    public Response getAllSecretaries(@PathParam("id") Long id) {
+    public Response getAllSecretariesFromDepartment(@PathParam("id") Long id) {
         log.info("getAll secretaries from department {}", id);
 
         ArrayList<Secretary> secretaries = new ArrayList<>();
@@ -119,112 +119,5 @@ public class DepartmentResources {
             d.setPostGraduation(s);
         }
         return Response.ok(departmentDAO.persist(d)).build();
-    }
-
-    @GET
-    @Path("/{dId}/secretary/{id}")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response getSecretaries(@PathParam("id") Long id) {
-        log.info("get secretary: id={}", id);
-
-        return Response.ok(new SecretaryDTO(secretaryDAO.get(id))).build();
-    }
-
-    @PUT
-    @Path("/{dId}/secretary/{id}")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response updateSecretary(@PathParam("id") Long id, SecretaryDTO entity) {
-        log.info("update secretary: id={}", id);
-
-        Secretary s = secretaryDAO.get(id);
-        s.update(entity);
-        return Response.ok(secretaryDAO.persist(s)).build();
-    }
-
-    @DELETE
-    @Path("/{dId}/secretary/{id}")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response deleteSecretary(@PathParam("dId") Long dId, @PathParam("id") Long id) {
-        log.info("delete secretary: id={}", id);
-
-        Department d = departmentDAO.get(dId);
-        Secretary s = secretaryDAO.get(id);
-
-        if (s.getType().equals("GRADUATION")) {
-            d.setGraduation(null);
-        } else {
-            d.setPostGraduation(null);
-        }
-        departmentDAO.persist(d);
-
-        secretaryDAO.delete(s);
-        return Response.noContent().build();
-    }
-
-    @GET
-    @Path("/{dId}/secretary/{id}/course")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response getAllCourses(@PathParam("dId") Long dId, @PathParam("id") Long id) {
-        log.info("getAll courses from secretary {}", id);
-
-        Secretary s = secretaryDAO.get(id);
-        return Response.ok(s.getCourses()).build();
-    }
-
-    @POST
-    @Path("/{dId}/secretary/{id}/course")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response createCourse(@PathParam("id") Long id, CourseDTO entity) {
-        log.info("create course on secretary {}", id);
-
-        Secretary s = secretaryDAO.get(id);
-        Course c = s.addCourse(entity);
-        if (c != null) {
-            courseDAO.persist(c);
-        }
-        return Response.ok(secretaryDAO.persist(s)).build();
-    }
-
-    @GET
-    @Path("/{dId}/secretary/{sId}/course/{id}")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response getCourse(@PathParam("id") Long id) {
-        log.info("get course: id={}", id);
-
-        return Response.ok(courseDAO.get(id)).build();
-    }
-
-    @PUT
-    @Path("/{dId}/secretary/{sId}/course/{id}")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response updateCourse(@PathParam("id") Long id, CourseDTO entity) {
-        log.info("update course: id={}", id);
-
-        Course c = courseDAO.get(id);
-        c.update(entity);
-        return Response.ok(courseDAO.persist(c)).build();
-    }
-
-    @DELETE
-    @Path("/{dId}/secretary/{sId}/course/{id}")
-    @UnitOfWork
-    public Response deleteCourse(@PathParam("sId") Long sId, @PathParam("id") Long id) {
-        log.info("delete course {}", id);
-
-        Course c = courseDAO.get(id);
-
-        Secretary s = secretaryDAO.get(sId);
-        s.deleteCourse(c);
-        secretaryDAO.persist(s);
-
-        courseDAO.delete(c);
-        return Response.noContent().build();
     }
 }

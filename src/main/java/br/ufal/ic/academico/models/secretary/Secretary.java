@@ -28,7 +28,9 @@ public class Secretary {
     }
 
     public void update(SecretaryDTO entity) {
-        this.type = entity.type;
+        if (entity.type != null) {
+            this.type = entity.type;
+        }
         this.courses = coursesDTOListToCoursesList(entity.courses);
     }
 

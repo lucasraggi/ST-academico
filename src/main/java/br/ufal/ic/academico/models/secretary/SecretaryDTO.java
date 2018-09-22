@@ -18,13 +18,11 @@ public class SecretaryDTO {
     public List<CourseDTO> courses = new LinkedList<>();
 
     public SecretaryDTO(Secretary entity) {
-        if (entity != null) {
-            this.type = entity.type;
-            if (entity.courses != null) {
-                LinkedList<CourseDTO> courses = new LinkedList<>();
-                entity.courses.forEach(c -> courses.addLast(new CourseDTO(c)));
-                this.courses = courses;
-            }
+        this.type = entity.type;
+        if (entity.courses != null) {
+            LinkedList<CourseDTO> courses = new LinkedList<>();
+            entity.courses.forEach(c -> courses.addLast(new CourseDTO(c)));
+            this.courses = courses;
         }
     }
 }

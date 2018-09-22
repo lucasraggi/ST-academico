@@ -1,6 +1,7 @@
 package br.ufal.ic.academico;
 
-import br.ufal.ic.academico.models.person.PersonDTO;
+import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.course.CourseDAO;
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
 import br.ufal.ic.academico.models.person.student.StudentDTO;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
 public class EnrollmentResources {
     private final StudentDAO studentDAO;
     private final TeacherDAO teacherDAO;
+    private final CourseDAO courseDAO;
 
     @GET
     @Path("/student")
@@ -127,5 +129,20 @@ public class EnrollmentResources {
         Teacher t = teacherDAO.get(id);
         teacherDAO.delete(t);
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @POST
+    @Path("/student/{sId}/course/{id}")
+    @UnitOfWork
+    public Response enrollInCourse(@PathParam("sId") Long sId, @PathParam("id") Long id) {
+        log.info("enroll student {} in course {}", sId, id);
+
+        Course c = courseDAO.get(id);
+        Student s = studentDAO.get(sId);
+        if (s.getCourse() != null) {
+            return Response.status(400).entity("This student is already enrolled in a course.").build();
+        }
+        s.setCourse(c);
+        return Response.ok(studentDAO.persist(s)).build();
     }
 }

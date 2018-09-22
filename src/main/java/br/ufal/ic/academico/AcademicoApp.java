@@ -53,12 +53,16 @@ public class AcademicoApp extends Application<ConfigApp> {
         final CourseDAO courseDAO = new CourseDAO(hibernate.getSessionFactory());
 
         final MyResource resource = new MyResource(dao);
-        final EnrollmentResources enrollmentResources = new EnrollmentResources(studentDAO, teacherDAO);
+        final EnrollmentResources enrollmentResources = new EnrollmentResources(studentDAO, teacherDAO, courseDAO);
         final DepartmentResources departmentResources = new DepartmentResources(departmentDAO, secretaryDAO, courseDAO);
+        final SecretaryResources secretaryResources = new SecretaryResources(departmentDAO, secretaryDAO, courseDAO);
+        final CourseResources courseResources = new CourseResources(secretaryDAO, courseDAO);
 
         environment.jersey().register(resource);
         environment.jersey().register(enrollmentResources);
         environment.jersey().register(departmentResources);
+        environment.jersey().register(secretaryResources);
+        environment.jersey().register(courseResources);
     }
 
     private final HibernateBundle<ConfigApp> hibernate

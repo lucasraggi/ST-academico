@@ -30,7 +30,9 @@ public class Course {
     }
 
     public void update(CourseDTO entity) {
-        this.name = entity.name;
+        if (entity.name != null) {
+            this.name = entity.name;
+        }
         this.disciplines = disciplineDTOListToDisciplineList(entity.disciplines);
     }
 

@@ -1,5 +1,7 @@
 package br.ufal.ic.academico.models;
 
+import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.secretary.Secretary;
 import io.dropwizard.hibernate.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;

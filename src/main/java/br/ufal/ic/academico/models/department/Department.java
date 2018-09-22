@@ -27,6 +27,8 @@ public class Department {
     }
 
     public void update(DepartmentDTO entity) {
-        this.name = entity.name;
+        if (entity.name != null) {
+            this.name = entity.name;
+        }
     }
 }

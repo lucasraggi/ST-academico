@@ -18,13 +18,15 @@ public class Person {
     private Long id;
 
     @Setter
-    protected String name;
-
-    @Setter
-    protected String role;
+    protected String name, role;
 
     public Person(String name, String role) {
         this.name = name;
-        this.role = role.toUpperCase().equals("STUDENT") ? "STUDENT" : "TEACHER";
+        this.role = role;
+    }
+
+    protected void update(String name, String role) {
+        this.name = name;
+        this.role = role;
     }
 }

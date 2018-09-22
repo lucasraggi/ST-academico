@@ -16,7 +16,7 @@ public class Student extends Person {
     Integer credits;
 
     public Student(StudentDTO entity) {
-        name = entity.name;
+        super(entity.name, "STUDENT");
         credits = 0;
         if (entity.credits != null) {
             credits = entity.credits;
@@ -24,7 +24,7 @@ public class Student extends Person {
     }
 
     public void update(StudentDTO entity) {
-        name = entity.name;
+        super.update(entity.name, "STUDENT");
         credits = entity.credits;
     }
 }

@@ -1,15 +1,15 @@
 # Endpoints List
 ## Requisitos funcionais
 ### Requisito 1
-- *Path:* /enrollment
+- *Path:* /enrollment/student
 - *Method:* GET
 > lista todos os alunos da universidade
 ---
-- *Path:* /enrollment/<student_pk>/discipline
+- *Path:* /enrollment/student/<student_pk>/discipline
 - *Method:* GET
 > lista todas as disciplinas do departamento do curso do aluno
 ---
-- *Path:* /enrollment/<student_pk>/discipline/<discipline_pk>
+- *Path:* /enrollment/student/<student_pk>/discipline/<discipline_pk>
 - *Method:* POST
 > deve informar se o aluno foi matriculado ou não, justificando nesse ultimo caso
 ---

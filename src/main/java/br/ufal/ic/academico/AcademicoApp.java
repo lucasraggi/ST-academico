@@ -10,6 +10,8 @@ import br.ufal.ic.academico.models.department.DepartmentDAO;
 import br.ufal.ic.academico.models.discipline.Discipline;
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
+import br.ufal.ic.academico.models.person.teacher.Teacher;
+import br.ufal.ic.academico.models.person.teacher.TeacherDAO;
 import br.ufal.ic.academico.models.secretary.Secretary;
 import br.ufal.ic.academico.models.secretary.SecretaryDAO;
 import io.dropwizard.Application;
@@ -43,15 +45,15 @@ public class AcademicoApp extends Application<ConfigApp> {
 
     @Override
     public void run(ConfigApp config, Environment environment) {
-        
         final PersonDAO dao = new PersonDAO(hibernate.getSessionFactory());
         final StudentDAO studentDAO = new StudentDAO(hibernate.getSessionFactory());
+        final TeacherDAO teacherDAO = new TeacherDAO(hibernate.getSessionFactory());
         final DepartmentDAO departmentDAO = new DepartmentDAO(hibernate.getSessionFactory());
         final SecretaryDAO secretaryDAO = new SecretaryDAO(hibernate.getSessionFactory());
         final CourseDAO courseDAO = new CourseDAO(hibernate.getSessionFactory());
 
         final MyResource resource = new MyResource(dao);
-        final EnrollmentResources enrollmentResources = new EnrollmentResources(studentDAO);
+        final EnrollmentResources enrollmentResources = new EnrollmentResources(studentDAO, teacherDAO);
         final DepartmentResources departmentResources = new DepartmentResources(departmentDAO, secretaryDAO, courseDAO);
 
         environment.jersey().register(resource);
@@ -60,7 +62,8 @@ public class AcademicoApp extends Application<ConfigApp> {
     }
 
     private final HibernateBundle<ConfigApp> hibernate
-            = new HibernateBundle<ConfigApp>(Person.class, Student.class, Department.class, Secretary.class, Course.class, Discipline.class) {
+            = new HibernateBundle<ConfigApp>(Person.class,
+            Student.class, Teacher.class, Department.class, Secretary.class, Course.class, Discipline.class) {
 
         @Override
         public DataSourceFactory getDataSourceFactory(ConfigApp configuration) {

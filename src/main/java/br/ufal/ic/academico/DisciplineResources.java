@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("discipline")
 @Slf4j
@@ -26,7 +28,7 @@ public class DisciplineResources {
     public Response getAll() {
         log.info("getAll disciplines");
 
-        return Response.ok(disciplineDAO.getAll()).build();
+        return Response.ok(disciplineListToDTOList(disciplineDAO.getAll())).build();
     }
 
     @GET
@@ -35,7 +37,11 @@ public class DisciplineResources {
     public Response get(@PathParam("id") Long id) {
         log.info("get discipline: id={}", id);
 
-        return Response.ok(disciplineDAO.get(id)).build();
+        Discipline d = disciplineDAO.get(id);
+        if (d == null) {
+            return Response.status(404).entity("Discipline not found.").build();
+        }
+        return Response.ok(new DisciplineDTO(d)).build();
     }
 
     @PUT
@@ -46,22 +52,36 @@ public class DisciplineResources {
         log.info("update discipline: id={}", id);
 
         Discipline d = disciplineDAO.get(id);
+        if (d == null) {
+            return Response.status(404).entity("Discipline not found.").build();
+        }
         d.update(entity);
-        return Response.ok(disciplineDAO.persist(d)).build();
+        return Response.ok(new DisciplineDTO(disciplineDAO.persist(d))).build();
     }
+// ToDo Resolver esse DELETE
+//    @DELETE
+//    @Path("/{id}")
+//    @UnitOfWork
+//    public Response deleteCourse(@PathParam("id") Long id) {
+//        log.info("delete discipline {}", id);
+//
+//        Discipline d = disciplineDAO.get(id);
+//        if (d == null) {
+//            return Response.status(404).entity("Discipline not found.").build();
+//        }
+//
+//        Course c = disciplineDAO.getCourse(d);
+//        c.deleteDiscipline(d);
+//        courseDAO.persist(c);
+//        disciplineDAO.delete(d);
+//        return Response.noContent().build();
+//    }
 
-    @DELETE
-    @Path("/{id}")
-    @UnitOfWork
-    public Response deleteCourse(@PathParam("id") Long id) {
-        log.info("delete discipline {}", id);
-
-        Discipline d = disciplineDAO.get(id);
-        Course c = disciplineDAO.getCourse(d);
-        c.deleteDiscipline(d);
-
-        courseDAO.persist(c);
-        disciplineDAO.delete(d);
-        return Response.noContent().build();
+    private List<DisciplineDTO> disciplineListToDTOList(List<Discipline> list) {
+        List<DisciplineDTO> dtoList = new ArrayList<>();
+        if (list != null) {
+            list.forEach(d -> dtoList.add(new DisciplineDTO(d)));
+        }
+        return dtoList;
     }
 }

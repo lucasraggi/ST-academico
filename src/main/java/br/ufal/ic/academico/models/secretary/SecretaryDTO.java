@@ -1,6 +1,5 @@
 package br.ufal.ic.academico.models.secretary;
 
-import br.ufal.ic.academico.models.course.CourseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class SecretaryDTO {
+    public Long id;
     public String type;
-    public List<CourseDTO> courses = new LinkedList<>();
+    public List<String> courses = new LinkedList<>();
 
     public SecretaryDTO(Secretary entity) {
+        this.id = entity.getId();
         this.type = entity.type;
         if (entity.courses != null) {
-            LinkedList<CourseDTO> courses = new LinkedList<>();
-            entity.courses.forEach(c -> courses.addLast(new CourseDTO(c)));
+            LinkedList<String> courses = new LinkedList<>();
+            entity.courses.forEach(c -> courses.addLast(c.getName()));
             this.courses = courses;
         }
     }

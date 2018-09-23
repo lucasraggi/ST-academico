@@ -1,10 +1,15 @@
 package br.ufal.ic.academico.models.person.student;
 
 import br.ufal.ic.academico.models.GeneralDAO;
+import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.department.Department;
+import br.ufal.ic.academico.models.secretary.Secretary;
+import br.ufal.ic.academico.models.secretary.SecretaryDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class StudentDAO extends GeneralDAO<Student> {
@@ -14,5 +19,22 @@ public class StudentDAO extends GeneralDAO<Student> {
 
     public ArrayList<Student> getAll() {
         return (ArrayList<Student>) currentSession().createQuery("from Student").list();
+    }
+
+    public Department getDepartment(Student student) {
+        Course course = student.getCourse();
+
+        SecretaryDAO secretaryDAO = new SecretaryDAO(currentSession().getSessionFactory());
+
+        Secretary secretary = null;
+        List<Secretary> secretaries = secretaryDAO.getAll();
+        for (Secretary s : secretaries) {
+            if (s.getCourses().contains(course)) {
+                secretary = s;
+                break;
+            }
+        }
+
+        return secretaryDAO.getDepartment(secretary);
     }
 }

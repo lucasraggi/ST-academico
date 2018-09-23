@@ -17,6 +17,10 @@ public class SecretaryDAO extends GeneralDAO<Secretary> {
     }
 
     public Department getDepartment(Secretary secretary) {
+        if (secretary == null) {
+            return null;
+        }
+
         String query = "select D from Department D, Secretary S where D." + secretary.getType().toLowerCase() + ".id = S.id";
         return (Department) currentSession().createQuery(query).list().get(0);
     }

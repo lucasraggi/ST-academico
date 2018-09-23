@@ -14,10 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class CourseDTO {
+    Long id;
     String name;
     List<DisciplineDTO> disciplines;
 
     public CourseDTO(Course entity) {
+        this.id = entity.getId();
         this.name = entity.name;
 
         LinkedList<DisciplineDTO> disciplines = new LinkedList<>();

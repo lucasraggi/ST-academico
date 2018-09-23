@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,24 +24,7 @@ public class Secretary {
 
     public Secretary(SecretaryDTO entity) {
         this.type = entity.type.toUpperCase().equals("POST-GRADUATION") ? "POST-GRADUATION" : "GRADUATION";
-        this.courses = coursesDTOListToCoursesList(entity.courses);
-    }
-
-    public void update(SecretaryDTO entity) {
-        if (entity.type != null) {
-            this.type = entity.type;
-        }
-        if (entity.courses != null) {
-            this.courses = coursesDTOListToCoursesList(entity.courses);
-        }
-    }
-
-    private LinkedList<Course> coursesDTOListToCoursesList(List<CourseDTO> courseDTOs) {
-        LinkedList<Course> courses = new LinkedList<>();
-        if (courseDTOs != null) {
-            courseDTOs.forEach(c -> courses.addLast(new Course(c)));
-        }
-        return courses;
+        this.courses = new ArrayList<>();
     }
 
     public Course addCourse(CourseDTO entity) {

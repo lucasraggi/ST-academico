@@ -1,35 +1,46 @@
 package br.ufal.ic.academico.models.discipline;
 
+import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.person.student.Student;
+import br.ufal.ic.academico.models.person.student.StudentDTO;
+import br.ufal.ic.academico.models.person.teacher.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 @Getter
 @RequiredArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "code"))
 public class Discipline {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Getter
     String name;
 
-    @Getter
+    String code;
+
     @Setter
     Integer credits, requiredCredits;
 
-    @Getter
     @Setter
-    @ManyToMany(cascade = CascadeType.ALL)
-    List<Discipline> requiredDisciplines;
+    @ElementCollection
+    List<String> requiredDisciplines;
+
+    @Setter
+    @OneToOne
+    Teacher teacher;
+
+    @ManyToMany
+    List<Student> students;
 
     public Discipline(DisciplineDTO entity) {
+        this.code = entity.code;
         this.name = entity.name;
         if (entity.credits != null) {
             this.credits = entity.credits;
@@ -41,7 +52,11 @@ public class Discipline {
         } else {
             this.requiredCredits = 0;
         }
-        this.requiredDisciplines = disciplineDTOListToDisciplineList(entity.requiredDisciplines);
+        if (entity.requiredDisciplines != null) {
+            this.requiredDisciplines = entity.requiredDisciplines;
+        } else {
+            this.requiredDisciplines = new ArrayList<>();
+        }
     }
 
     public void update(DisciplineDTO entity) {
@@ -55,15 +70,37 @@ public class Discipline {
             requiredCredits = entity.requiredCredits;
         }
         if (entity.requiredDisciplines != null) {
-            requiredDisciplines = disciplineDTOListToDisciplineList(entity.requiredDisciplines);
+            requiredDisciplines = entity.requiredDisciplines;
         }
     }
 
-    private List<Discipline> disciplineDTOListToDisciplineList(List<DisciplineDTO> disciplineDTOs) {
-        ArrayList<Discipline> disciplines = new ArrayList<>();
-        if (disciplineDTOs != null) {
-            disciplineDTOs.forEach(d -> disciplines.add(new Discipline(d)));
+    public String enroll(Course disciplineCourse, Student student) {
+        if (student.getCourse() == null) {
+            return "Student isn't enrolled in any course.";
+        } if (!student.getCourse().getId().equals(disciplineCourse.getId())) {
+            return "Student course doesn't correspond to the discipline course. Student course is '" + student.getCourse().getName() +
+                    "', discipline course is '" + disciplineCourse.getName() + "'.";
         }
-        return disciplines;
+        if (student.getCredits() < requiredCredits) {
+            return "Student doesn't have enough credits. Required " + requiredCredits + ", has " + student.getCredits() +".";
+        }
+        for (String code : requiredDisciplines) {
+            if (!student.getCompletedDisciplines().contains(code)) {
+                return "Student hasn't completed the discipline " + code + ".";
+            }
+        }
+        if (this.students.contains(student)) {
+            return "Student already enrolled at this discipline.";
+        }
+        if (student.getCompletedDisciplines().contains(this.code)) {
+            return "Student has already completed this discipline.";
+        }
+
+        this.students.add(student);
+        return null;
+    }
+
+    public boolean removeStudent(Student student) {
+        return this.students.remove(student);
     }
 }

@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("secretary")
 @Slf4j
@@ -30,7 +32,7 @@ public class SecretaryResources {
     public Response getAll() {
         log.info("getAll secretaries");
 
-        return Response.ok(secretaryDAO.getAll()).build();
+        return Response.ok(secretaryListToDTOList(secretaryDAO.getAll())).build();
     }
 
     @GET
@@ -39,40 +41,36 @@ public class SecretaryResources {
     public Response get(@PathParam("id") Long id) {
         log.info("get secretary: id={}", id);
 
-        return Response.ok(new SecretaryDTO(secretaryDAO.get(id))).build();
-    }
-
-    @PUT
-    @Path("/{id}")
-    @UnitOfWork
-    @Consumes("application/json")
-    public Response update(@PathParam("id") Long id, SecretaryDTO entity) {
-        log.info("update secretary: id={}", id);
-
         Secretary s = secretaryDAO.get(id);
-        s.update(entity);
-        return Response.ok(secretaryDAO.persist(s)).build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    @UnitOfWork
-    public Response delete(@PathParam("id") Long id) {
-        log.info("delete secretary: id={}", id);
-
-        Secretary s = secretaryDAO.get(id);
-        Department d = secretaryDAO.getDepartment(s);
-
-        if (s.getType().equals("GRADUATION")) {
-            d.setGraduation(null);
-        } else {
-            d.setPostGraduation(null);
+        if (s == null) {
+            return Response.status(404).entity("Secretary not found.").build();
         }
-        departmentDAO.persist(d);
-
-        secretaryDAO.delete(s);
-        return Response.noContent().build();
+        return Response.ok(new SecretaryDTO(s)).build();
     }
+// ToDo Resolver esse DELETE
+//    @DELETE
+//    @Path("/{id}")
+//    @UnitOfWork
+//    public Response delete(@PathParam("id") Long id) {
+//        log.info("delete secretary: id={}", id);
+//
+//        Secretary s = secretaryDAO.get(id);
+//        if (s == null) {
+//            return Response.status(404).entity("Secretary not found.").build();
+//        }
+//
+//        Department d = secretaryDAO.getDepartment(s);
+//
+//        if (s.getType().equals("GRADUATION")) {
+//            d.setGraduation(null);
+//        } else {
+//            d.setPostGraduation(null);
+//        }
+//        departmentDAO.persist(d);
+//
+//        secretaryDAO.delete(s);
+//        return Response.noContent().build();
+//    }
 
     @GET
     @Path("/{id}/course")
@@ -81,7 +79,10 @@ public class SecretaryResources {
         log.info("getAll courses from secretary {}", id);
 
         Secretary s = secretaryDAO.get(id);
-        return Response.ok(s.getCourses()).build();
+        if (s == null) {
+            return Response.status(404).entity("Secretary not found.").build();
+        }
+        return Response.ok(s.getCourses().stream().map(Course::getName).toArray()).build();
     }
 
     @POST
@@ -92,10 +93,22 @@ public class SecretaryResources {
         log.info("create course on secretary {}", id);
 
         Secretary s = secretaryDAO.get(id);
+        if (s == null) {
+            return Response.status(404).entity("Secretary not found.").build();
+        }
+
         Course c = s.addCourse(entity);
         if (c != null) {
             courseDAO.persist(c);
         }
-        return Response.ok(secretaryDAO.persist(s)).build();
+        return Response.ok(new SecretaryDTO(secretaryDAO.persist(s))).build();
+    }
+
+    private List<SecretaryDTO> secretaryListToDTOList(List<Secretary> list) {
+        List<SecretaryDTO> dtoList = new ArrayList<>();
+        if (list != null) {
+            list.forEach(s -> dtoList.add(new SecretaryDTO(s)));
+        }
+        return dtoList;
     }
 }

@@ -6,21 +6,26 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
 @ToString
 public class DepartmentDTO {
+    Long id;
     String name;
-    SecretaryDTO gradution, postGraduation;
+    List<SecretaryDTO> secretaries = new ArrayList<>();
 
     public DepartmentDTO(Department entity) {
+        this.id = entity.getId();
         this.name = entity.name;
         if (entity.graduation != null) {
-            this.gradution = new SecretaryDTO(entity.graduation);
+            this.secretaries.add(new SecretaryDTO(entity.graduation));
         }
         if (entity.postGraduation != null) {
-            this.postGraduation = new SecretaryDTO(entity.postGraduation);
+            this.secretaries.add(new SecretaryDTO(entity.postGraduation));
         }
     }
 }

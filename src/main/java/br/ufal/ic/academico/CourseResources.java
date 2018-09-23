@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("course")
 @Slf4j
@@ -30,7 +32,7 @@ public class CourseResources {
     public Response getAll() {
         log.info("getAll courses");
 
-        return Response.ok(courseDAO.getAll()).build();
+        return Response.ok(courseListToDTOList(courseDAO.getAll())).build();
     }
 
     @GET
@@ -39,7 +41,11 @@ public class CourseResources {
     public Response get(@PathParam("id") Long id) {
         log.info("get course: id={}", id);
 
-        return Response.ok(courseDAO.get(id)).build();
+        Course c = courseDAO.get(id);
+        if (c == null) {
+            return Response.status(404).entity("Course not found.").build();
+        }
+        return Response.ok(new CourseDTO(c)).build();
     }
 
     @PUT
@@ -47,27 +53,34 @@ public class CourseResources {
     @UnitOfWork
     @Consumes("application/json")
     public Response update(@PathParam("id") Long id, CourseDTO entity) {
-        log.info("update course: id={}", id);
+        log.info("update course {} to {}", id, entity);
 
         Course c = courseDAO.get(id);
+        if (c == null) {
+            return Response.status(404).entity("Course not found.").build();
+        }
         c.update(entity);
-        return Response.ok(courseDAO.persist(c)).build();
+        return Response.ok(new CourseDTO(courseDAO.persist(c))).build();
     }
-
-    @DELETE
-    @Path("/{id}")
-    @UnitOfWork
-    public Response deleteCourse(@PathParam("id") Long id) {
-        log.info("delete course {}", id);
-
-        Course c = courseDAO.get(id);
-        Secretary s = courseDAO.getSecretary(c);
-        s.deleteCourse(c);
-
-        secretaryDAO.persist(s);
-        courseDAO.delete(c);
-        return Response.noContent().build();
-    }
+// ToDo Resolver esse DELETE
+//    @DELETE
+//    @Path("/{id}")
+//    @UnitOfWork
+//    public Response deleteCourse(@PathParam("id") Long id) {
+//        log.info("delete course {}", id);
+//
+//        Course c = courseDAO.get(id);
+//        if (c == null) {
+//            return Response.status(404).entity("Course not found.").build();
+//        }
+//
+//        Secretary s = courseDAO.getSecretary(c);
+//        s.deleteCourse(c);
+//
+//        secretaryDAO.persist(s);
+//        courseDAO.delete(c);
+//        return Response.noContent().build();
+//    }
 
     @GET
     @Path("/{id}/discipline")
@@ -76,7 +89,10 @@ public class CourseResources {
         log.info("getAll disciplines from course {}", id);
 
         Course c = courseDAO.get(id);
-        return Response.ok(c.getDisciplines()).build();
+        if (c == null) {
+            return Response.status(404).entity("Course not found.").build();
+        }
+        return Response.ok(c.getDisciplines().stream().map(DisciplineDTO::new).toArray()).build();
     }
 
     @POST
@@ -86,12 +102,26 @@ public class CourseResources {
     public Response createDiscipline(@PathParam("id") Long id, DisciplineDTO entity) {
         log.info("create discipline in course {}", id);
 
-        Discipline d = new Discipline(entity);
-        disciplineDAO.persist(d);
+        if (entity.getCode() == null) {
+            return Response.status(400).entity("Discipline code required.").build();
+        }
 
         Course c = courseDAO.get(id);
-        c.addDiscipline(d);
+        if (c == null) {
+            return Response.status(404).entity("Course not found.").build();
+        }
 
-        return Response.ok(courseDAO.persist(c)).build();
+        Discipline d = new Discipline(entity);
+        disciplineDAO.persist(d);
+        c.addDiscipline(d);
+        return Response.ok(new CourseDTO(courseDAO.persist(c))).build();
+    }
+
+    private List<CourseDTO> courseListToDTOList(List<Course> list) {
+        List<CourseDTO> dtoList = new ArrayList<>();
+        if (list != null) {
+            list.forEach(c -> dtoList.add(new CourseDTO(c)));
+        }
+        return dtoList;
     }
 }

@@ -1,7 +1,6 @@
 package br.ufal.ic.academico.models.discipline;
 
-import br.ufal.ic.academico.models.person.student.StudentDTO;
-import br.ufal.ic.academico.models.person.teacher.Teacher;
+import br.ufal.ic.academico.models.person.student.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class DisciplineDTO {
     Integer credits = 0, requiredCredits = 0;
     List<String> requiredDisciplines;
     String teacher;
-    List<String> students;
+    List<StudentDTO> students;
 
     public DisciplineDTO(Discipline entity) {
         this.id = entity.getId();
@@ -33,9 +32,22 @@ public class DisciplineDTO {
         if (entity.teacher != null) {
             this.teacher = entity.teacher.getFirstname() + (entity.teacher.getLastName() != null ? " " + entity.teacher.getLastName() : "");
         }
-        ArrayList<String> students = new ArrayList<>();
-        entity.students.forEach(s -> students.add("[" + s.getId() + "] " + s.getFirstname() + (s.getLastName() != null ? " " + s.getLastName() : "")));
-        this.students = students;
+        ArrayList<StudentDTO> dtoList = new ArrayList<>();
+        entity.students.forEach(s -> dtoList.add(new StudentDTO(s)));
+        this.students = dtoList;
+    }
 
+    @Getter
+    @RequiredArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    private class StudentDTO {
+        public Long id;
+        public String name;
+
+        StudentDTO(Student entity) {
+            this.id = entity.getId();
+            this.name = entity.getFirstname() + (entity.getLastName() != null ? " " + entity.getLastName() : "");
+        }
     }
 }

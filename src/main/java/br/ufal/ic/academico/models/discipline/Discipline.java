@@ -1,9 +1,9 @@
 package br.ufal.ic.academico.models.discipline;
 
-import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.department.Department;
 import br.ufal.ic.academico.models.person.student.Student;
-import br.ufal.ic.academico.models.person.student.StudentDTO;
 import br.ufal.ic.academico.models.person.teacher.Teacher;
+import br.ufal.ic.academico.models.secretary.Secretary;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -74,12 +74,19 @@ public class Discipline {
         }
     }
 
-    public String enroll(Course disciplineCourse, Student student) {
+    public String enroll(Student student, Department studentDepartment, Department disciplineDepartment,
+                         Secretary studentSecretary, Secretary disciplineSecretary) {
         if (student.getCourse() == null) {
             return "Student isn't enrolled in any course.";
-        } if (!student.getCourse().getId().equals(disciplineCourse.getId())) {
-            return "Student course doesn't correspond to the discipline course. Student course is '" + student.getCourse().getName() +
-                    "', discipline course is '" + disciplineCourse.getName() + "'.";
+        }
+        if (!studentDepartment.getId().equals(disciplineDepartment.getId())) {
+            return "Student's department doesn't correspond to discipline's department.";
+        }
+        if (!studentSecretary.isGraduation() && disciplineSecretary.isGraduation()) {
+            return "Post graduation student can't enroll at a graduation discipline.";
+        }
+        if (studentSecretary.isGraduation() && !disciplineSecretary.isGraduation() && student.getCredits() < 170) {
+            return "Student doesn't have enough credits to enroll at a post graduation discipline.";
         }
         if (student.getCredits() < requiredCredits) {
             return "Student doesn't have enough credits. Required " + requiredCredits + ", has " + student.getCredits() +".";

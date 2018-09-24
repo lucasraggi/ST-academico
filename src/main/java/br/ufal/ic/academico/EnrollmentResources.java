@@ -249,7 +249,8 @@ public class EnrollmentResources {
             return Response.status(404).entity("Discipline not found.").build();
         }
 
-        String res = d.enroll(disciplineDAO.getCourse(d), s);
+        String res = d.enroll(s, studentDAO.getDepartment(s), disciplineDAO.getDepartment(d),
+                studentDAO.getSecretary(s), disciplineDAO.getSecretary(d));
         if (res != null) {
             return Response.status(400).entity(res).build();
         }

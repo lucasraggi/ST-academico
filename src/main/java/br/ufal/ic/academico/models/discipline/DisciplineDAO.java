@@ -2,7 +2,10 @@ package br.ufal.ic.academico.models.discipline;
 
 import br.ufal.ic.academico.models.GeneralDAO;
 import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.department.Department;
 import br.ufal.ic.academico.models.person.student.Student;
+import br.ufal.ic.academico.models.secretary.Secretary;
+import br.ufal.ic.academico.models.secretary.SecretaryDAO;
 import org.hibernate.SessionFactory;
 
 import java.util.ArrayList;
@@ -39,5 +42,27 @@ public class DisciplineDAO extends GeneralDAO<Discipline> {
             }
         }
         return disciplines;
+    }
+
+    public Secretary getSecretary(Discipline discipline) {
+        Course course = this.getCourse(discipline);
+
+        SecretaryDAO secretaryDAO = new SecretaryDAO(currentSession().getSessionFactory());
+        Secretary secretary = null;
+        List<Secretary> secretaries = secretaryDAO.getAll();
+        for (Secretary s : secretaries) {
+            if (s.getCourses().contains(course)) {
+                secretary = s;
+                break;
+            }
+        }
+        return secretary;
+    }
+
+    public Department getDepartment(Discipline discipline) {
+        Secretary secretary = this.getSecretary(discipline);
+
+        SecretaryDAO secretaryDAO = new SecretaryDAO(currentSession().getSessionFactory());
+        return secretaryDAO.getDepartment(secretary);
     }
 }

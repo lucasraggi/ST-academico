@@ -21,7 +21,7 @@ public class StudentDAO extends GeneralDAO<Student> {
         return (ArrayList<Student>) currentSession().createQuery("from Student").list();
     }
 
-    public Department getDepartment(Student student) {
+    public Secretary getSecretary(Student student) {
         Course course = student.getCourse();
 
         SecretaryDAO secretaryDAO = new SecretaryDAO(currentSession().getSessionFactory());
@@ -34,7 +34,13 @@ public class StudentDAO extends GeneralDAO<Student> {
                 break;
             }
         }
+        return secretary;
+    }
 
+    public Department getDepartment(Student student) {
+        Secretary secretary = this.getSecretary(student);
+
+        SecretaryDAO secretaryDAO = new SecretaryDAO(currentSession().getSessionFactory());
         return secretaryDAO.getDepartment(secretary);
     }
 }

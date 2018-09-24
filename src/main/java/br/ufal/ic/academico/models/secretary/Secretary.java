@@ -39,4 +39,8 @@ public class Secretary {
     public void deleteCourse(Course c) {
         this.courses.remove(c);
     }
+
+    public boolean isGraduation() {
+        return this.type.equals("GRADUATION");
+    }
 }

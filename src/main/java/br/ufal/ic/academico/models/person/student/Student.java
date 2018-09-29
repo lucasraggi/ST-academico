@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -23,7 +24,7 @@ public class Student extends Person {
     Integer credits;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     Course course;
 
     @ElementCollection

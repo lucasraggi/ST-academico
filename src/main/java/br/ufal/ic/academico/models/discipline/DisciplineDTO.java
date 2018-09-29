@@ -33,7 +33,9 @@ public class DisciplineDTO {
             this.teacher = entity.teacher.getFirstname() + (entity.teacher.getLastName() != null ? " " + entity.teacher.getLastName() : "");
         }
         ArrayList<StudentDTO> dtoList = new ArrayList<>();
-        entity.students.forEach(s -> dtoList.add(new StudentDTO(s)));
+        if (entity.students != null) {
+            entity.students.forEach(s -> dtoList.add(new StudentDTO(s)));
+        }
         this.students = dtoList;
     }
 

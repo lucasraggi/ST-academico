@@ -18,7 +18,7 @@ public class Department {
     @Setter
     String name;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @Setter
     Secretary graduation, postGraduation;
 

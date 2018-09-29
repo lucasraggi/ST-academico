@@ -59,23 +59,23 @@ public class DisciplineResources {
         return Response.ok(new DisciplineDTO(disciplineDAO.persist(d))).build();
     }
 // ToDo Resolver esse DELETE
-//    @DELETE
-//    @Path("/{id}")
-//    @UnitOfWork
-//    public Response deleteCourse(@PathParam("id") Long id) {
-//        log.info("delete discipline {}", id);
-//
-//        Discipline d = disciplineDAO.get(id);
-//        if (d == null) {
-//            return Response.status(404).entity("Discipline not found.").build();
-//        }
-//
-//        Course c = disciplineDAO.getCourse(d);
-//        c.deleteDiscipline(d);
-//        courseDAO.persist(c);
-//        disciplineDAO.delete(d);
-//        return Response.noContent().build();
-//    }
+    @DELETE
+    @Path("/{id}")
+    @UnitOfWork
+    public Response deleteCourse(@PathParam("id") Long id) {
+        log.info("delete discipline {}", id);
+
+        Discipline d = disciplineDAO.get(id);
+        if (d == null) {
+            return Response.status(404).entity("Discipline not found.").build();
+        }
+
+        Course c = disciplineDAO.getCourse(d);
+        c.deleteDiscipline(d);
+        courseDAO.persist(c);
+        disciplineDAO.delete(d);
+        return Response.noContent().build();
+    }
 
     private List<DisciplineDTO> disciplineListToDTOList(List<Discipline> list) {
         List<DisciplineDTO> dtoList = new ArrayList<>();

@@ -33,10 +33,10 @@ public class Discipline {
     List<String> requiredDisciplines;
 
     @Setter
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Teacher teacher;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     List<Student> students;
 
     public Discipline(DisciplineDTO entity) {

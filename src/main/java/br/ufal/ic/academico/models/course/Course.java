@@ -20,7 +20,7 @@ public class Course {
     String name;
 
     @Getter
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = CascadeType.ALL)
     List<Discipline> disciplines;
 
     public Course(CourseDTO entity) {

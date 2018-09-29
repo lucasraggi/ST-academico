@@ -63,24 +63,24 @@ public class CourseResources {
         return Response.ok(new CourseDTO(courseDAO.persist(c))).build();
     }
 // ToDo Resolver esse DELETE
-//    @DELETE
-//    @Path("/{id}")
-//    @UnitOfWork
-//    public Response deleteCourse(@PathParam("id") Long id) {
-//        log.info("delete course {}", id);
-//
-//        Course c = courseDAO.get(id);
-//        if (c == null) {
-//            return Response.status(404).entity("Course not found.").build();
-//        }
-//
-//        Secretary s = courseDAO.getSecretary(c);
-//        s.deleteCourse(c);
-//
-//        secretaryDAO.persist(s);
-//        courseDAO.delete(c);
-//        return Response.noContent().build();
-//    }
+    @DELETE
+    @Path("/{id}")
+    @UnitOfWork
+    public Response deleteCourse(@PathParam("id") Long id) {
+        log.info("delete course {}", id);
+
+        Course c = courseDAO.get(id);
+        if (c == null) {
+            return Response.status(404).entity("Course not found.").build();
+        }
+
+        Secretary s = courseDAO.getSecretary(c);
+        s.deleteCourse(c);
+
+        secretaryDAO.persist(s);
+        courseDAO.delete(c);
+        return Response.noContent().build();
+    }
 
     @GET
     @Path("/{id}/discipline")

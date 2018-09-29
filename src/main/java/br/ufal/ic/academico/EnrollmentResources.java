@@ -87,19 +87,19 @@ public class EnrollmentResources {
         return Response.ok(new StudentDTO(studentDAO.persist(s))).build();
     }
 // ToDo Resolver esse DELETE
-//    @DELETE
-//    @Path("/student/{id}")
-//    @UnitOfWork
-//    public Response deleteStudent(@PathParam("id") Long id) {
-//        log.info("delete student: id={}", id);
-//
-//        Student s = studentDAO.get(id);
-//        if (s == null) {
-//            return Response.status(404).entity("Student not found.").build();
-//        }
-//        studentDAO.delete(s);
-//        return Response.status(Response.Status.NO_CONTENT).build();
-//    }
+    @DELETE
+    @Path("/student/{id}")
+    @UnitOfWork
+    public Response deleteStudent(@PathParam("id") Long id) {
+        log.info("delete student: id={}", id);
+
+        Student s = studentDAO.get(id);
+        if (s == null) {
+            return Response.status(404).entity("Student not found.").build();
+        }
+        studentDAO.delete(s);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
 
     @GET
     @Path("/teacher")
@@ -152,19 +152,19 @@ public class EnrollmentResources {
         return Response.ok(new TeacherDTO(teacherDAO.persist(t))).build();
     }
 // ToDo Resolver esse DELETE
-//    @DELETE
-//    @Path("/teacher/{id}")
-//    @UnitOfWork
-//    public Response deleteTeacher(@PathParam("id") Long id) {
-//        log.info("delete teacher: id={}", id);
-//
-//        Teacher t = teacherDAO.get(id);
-//        if (t == null) {
-//            return Response.status(404).entity("Teacher not found.").build();
-//        }
-//        teacherDAO.delete(t);
-//        return Response.status(Response.Status.NO_CONTENT).build();
-//    }
+    @DELETE
+    @Path("/teacher/{id}")
+    @UnitOfWork
+    public Response deleteTeacher(@PathParam("id") Long id) {
+        log.info("delete teacher: id={}", id);
+
+        Teacher t = teacherDAO.get(id);
+        if (t == null) {
+            return Response.status(404).entity("Teacher not found.").build();
+        }
+        teacherDAO.delete(t);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
 
     @POST
     @Path("/teacher/{tId}/discipline/{id}")

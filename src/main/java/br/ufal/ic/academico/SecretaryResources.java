@@ -48,29 +48,29 @@ public class SecretaryResources {
         return Response.ok(new SecretaryDTO(s)).build();
     }
 // ToDo Resolver esse DELETE
-//    @DELETE
-//    @Path("/{id}")
-//    @UnitOfWork
-//    public Response delete(@PathParam("id") Long id) {
-//        log.info("delete secretary: id={}", id);
-//
-//        Secretary s = secretaryDAO.get(id);
-//        if (s == null) {
-//            return Response.status(404).entity("Secretary not found.").build();
-//        }
-//
-//        Department d = secretaryDAO.getDepartment(s);
-//
-//        if (s.getType().equals("GRADUATION")) {
-//            d.setGraduation(null);
-//        } else {
-//            d.setPostGraduation(null);
-//        }
-//        departmentDAO.persist(d);
-//
-//        secretaryDAO.delete(s);
-//        return Response.noContent().build();
-//    }
+    @DELETE
+    @Path("/{id}")
+    @UnitOfWork
+    public Response delete(@PathParam("id") Long id) {
+        log.info("delete secretary: id={}", id);
+
+        Secretary s = secretaryDAO.get(id);
+        if (s == null) {
+            return Response.status(404).entity("Secretary not found.").build();
+        }
+
+        Department d = secretaryDAO.getDepartment(s);
+
+        if (s.getType().equals("GRADUATION")) {
+            d.setGraduation(null);
+        } else {
+            d.setPostGraduation(null);
+        }
+        departmentDAO.persist(d);
+
+        secretaryDAO.delete(s);
+        return Response.noContent().build();
+    }
 
     @GET
     @Path("/{id}/course")

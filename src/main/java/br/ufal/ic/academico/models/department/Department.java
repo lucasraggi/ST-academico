@@ -26,6 +26,10 @@ public class Department {
         this.name = entity.name;
     }
 
+    public Department(String name) {
+        this.name = name;
+    }
+
     public void update(DepartmentDTO entity) {
         if (entity.name != null) {
             this.name = entity.name;

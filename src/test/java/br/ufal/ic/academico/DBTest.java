@@ -2,6 +2,7 @@ package br.ufal.ic.academico;
 
 import br.ufal.ic.academico.models.course.Course;
 import br.ufal.ic.academico.models.department.Department;
+import br.ufal.ic.academico.models.department.DepartmentDAO;
 import br.ufal.ic.academico.models.discipline.Discipline;
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
@@ -34,12 +35,14 @@ class DBTest {
     
     private StudentDAO studentDAO;
     private TeacherDAO teacherDAO;
+    private DepartmentDAO departmentDAO;
 
     @BeforeEach
     @SneakyThrows
     void setUp() {
         studentDAO = new StudentDAO(dbTesting.getSessionFactory());
         teacherDAO = new TeacherDAO(dbTesting.getSessionFactory());
+        departmentDAO = new DepartmentDAO(dbTesting.getSessionFactory());
     }
     
     @Test
@@ -124,5 +127,46 @@ class DBTest {
         assertNull(dbTesting.inTransaction(() -> teacherDAO.get(t2.getId())), "Teacher não foi removido");
         assertEquals(1, dbTesting.inTransaction(() -> teacherDAO.getAll()).size(),
                 "Teacher não foi removido da listagem de todos os Teachers");
+    }
+
+    @Test
+    void departmentCRUD() {
+        final Department d1 = new Department("IC");
+        final Department savedD1 = dbTesting.inTransaction(() -> departmentDAO.persist(d1));
+
+        assertNotNull(savedD1, "Falhou ao salvar um novo Department");
+        assertNotNull(savedD1.getId(), "Department não recebeu um id ao ser criado");
+        assertEquals(d1.getName(), savedD1.getName(), "Name do Department não corresponde com o informado");
+        assertNull(savedD1.getGraduation(), "Department recebeu uma secretaria de graduação ao ser criado");
+        assertNull(savedD1.getPostGraduation(), "Department recebeu uma secretaria de pós graduação ao ser criado");
+
+        d1.setName("FDA");
+        d1.setGraduation(new Secretary());
+        d1.setPostGraduation(new Secretary());
+        final Department updatedD1 = dbTesting.inTransaction(() -> departmentDAO.persist(d1));
+        assertEquals(d1.getName(), updatedD1.getName(), "Name do Department não foi atualizado corretamente");
+        assertEquals(d1.getGraduation().getId(), updatedD1.getGraduation().getId(),
+                "Secretaria de graduação associada incorretamente");
+        assertEquals(d1.getPostGraduation().getId(), updatedD1.getPostGraduation().getId(),
+                "Secretaria de pós graduação associada incorretamente");
+
+        dbTesting.inTransaction(() -> departmentDAO.delete(updatedD1));
+        assertNull(dbTesting.inTransaction(() -> departmentDAO.get(d1.getId())), "Department não foi removido");
+        assertEquals(0, dbTesting.inTransaction(() -> departmentDAO.getAll()).size(),
+                "Department não foi removido da listagem total de Department");
+
+        final Department d2 = new Department("ICBS");
+        final Department d3 = new Department("COS");
+        final Department savedD2 = dbTesting.inTransaction(() -> departmentDAO.persist(d2));
+        final Department savedD3 = dbTesting.inTransaction(() -> departmentDAO.persist(d3));
+
+        assertNotNull(savedD2, "Falhou ao salvar um segundo novo Department");
+        assertNotNull(savedD3, "Falhou ao salvar um terceiro novo Department");
+        assertEquals(2, dbTesting.inTransaction(() -> departmentDAO.getAll()).size(),
+                "Nem todos os novos Departments estão aparecendo na listagem total de Departments");
+        dbTesting.inTransaction(() -> departmentDAO.delete(d2));
+        assertNull(dbTesting.inTransaction(() -> departmentDAO.get(d2.getId())), "Department não foi removido");
+        assertEquals(1, dbTesting.inTransaction(() -> departmentDAO.getAll()).size(),
+                "Department não foi removido da listagem total de Departments");
     }
 }

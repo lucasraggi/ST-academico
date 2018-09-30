@@ -1,6 +1,7 @@
 package br.ufal.ic.academico;
 
 import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.course.CourseDAO;
 import br.ufal.ic.academico.models.course.CourseDTO;
 import br.ufal.ic.academico.models.department.Department;
 import br.ufal.ic.academico.models.department.DepartmentDAO;
@@ -178,7 +179,7 @@ class DBTest {
 
         s1.addCourse(new CourseDTO());
         final Secretary updatedS1 = dbTesting.inTransaction(() -> dao.persist(s1));
-        assertEquals("GRADUATION", updatedS1.getType().toString(), "Tipo da Secretary foi alterado");
+        assertEquals("GRADUATION", updatedS1.getType(), "Tipo da Secretary foi alterado");
         assertEquals(1, updatedS1.getCourses().size(), "Curso associado não foi salvo corretamente");
 
         dbTesting.inTransaction(() -> dao.delete(updatedS1));
@@ -199,5 +200,45 @@ class DBTest {
         assertNull(dbTesting.inTransaction(() -> dao.get(s2.getId())), "Secretary não foi removida");
         assertEquals(1, dbTesting.inTransaction(dao::getAll).size(),
                 "Secretary não foi removida da listagem total de Secretaries");
+    }
+
+    @Test
+    void courseCRUD() {
+        CourseDAO dao = new CourseDAO(dbTesting.getSessionFactory());
+
+        final Course c1 = new Course("Ciência da Computação");
+        final Course savedC1 = dbTesting.inTransaction(() -> dao.persist(c1));
+
+        assertNotNull(savedC1, "Falhou ao salvar um novo Course");
+        assertNotNull(savedC1.getId(), "Course não recebeu um id ao ser criado");
+        assertEquals("Ciência da Computação", savedC1.getName(),
+                "Name do Course não corresponde com o informado");
+        assertEquals(0, savedC1.getDisciplines().size(), "Course foi criado com Discipline(s) associada(s)");
+        assertNull(dbTesting.inTransaction(() -> dao.getSecretary(savedC1)), "Course foi associado à uma Secretary");
+
+        c1.setName("Engenharia da Computação");
+        c1.addDiscipline(new Discipline());
+        final Course updatedC1 = dbTesting.inTransaction(() -> dao.persist(c1));
+        assertEquals("Engenharia da Computação", updatedC1.getName(), "Name do Course não foi atualizado corretamente");
+        assertEquals(1, updatedC1.getDisciplines().size(), "Discpline não foi associada corretamente");
+
+        dbTesting.inTransaction(() -> dao.delete(updatedC1));
+        assertNull(dbTesting.inTransaction(() -> dao.get(c1.getId())), "Course não foi removido");
+        assertEquals(0, dbTesting.inTransaction(dao::getAll).size(),
+                "Course não foi removido da listagem total de Courses");
+
+        final Course c2 = new Course("Jornalismo");
+        final Course c3 = new Course("Direito");
+        final Course savedC2 = dbTesting.inTransaction(() -> dao.persist(c2));
+        final Course savedC3 = dbTesting.inTransaction(() -> dao.persist(c3));
+
+        assertNotNull(savedC2, "Falhou ao salvar um segundo novo Course");
+        assertNotNull(savedC3, "Falhou ao salvar um terceiro novo Course");
+        assertEquals(2, dbTesting.inTransaction(dao::getAll).size(),
+                "Nem todos os novos Courses estão aparecendo na listagem total de Courses");
+        dbTesting.inTransaction(() -> dao.delete(c2));
+        assertNull(dbTesting.inTransaction(() -> dao.get(c2.getId())), "Course não foi removido");
+        assertEquals(1, dbTesting.inTransaction(dao::getAll).size(),
+                "Course não foi removido da listagem total de Courses");
     }
 }

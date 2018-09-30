@@ -3,6 +3,7 @@ package br.ufal.ic.academico.models.course;
 import br.ufal.ic.academico.models.discipline.Discipline;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,15 +17,19 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Getter
+    @Setter
     String name;
 
-    @Getter
     @ManyToMany(cascade = CascadeType.ALL)
     List<Discipline> disciplines;
 
     public Course(CourseDTO entity) {
         this.name = entity.name;
+        this.disciplines = new ArrayList<>();
+    }
+
+    public Course(String name) {
+        this.name = name;
         this.disciplines = new ArrayList<>();
     }
 

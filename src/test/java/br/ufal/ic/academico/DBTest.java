@@ -6,6 +6,7 @@ import br.ufal.ic.academico.models.course.CourseDTO;
 import br.ufal.ic.academico.models.department.Department;
 import br.ufal.ic.academico.models.department.DepartmentDAO;
 import br.ufal.ic.academico.models.discipline.Discipline;
+import br.ufal.ic.academico.models.discipline.DisciplineDAO;
 import br.ufal.ic.academico.models.person.student.Student;
 import br.ufal.ic.academico.models.person.student.StudentDAO;
 import br.ufal.ic.academico.models.person.teacher.Teacher;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
@@ -240,5 +242,58 @@ class DBTest {
         assertNull(dbTesting.inTransaction(() -> dao.get(c2.getId())), "Course não foi removido");
         assertEquals(1, dbTesting.inTransaction(dao::getAll).size(),
                 "Course não foi removido da listagem total de Courses");
+    }
+
+    @Test
+    void disciplineCRUD() {
+        DisciplineDAO dao = new DisciplineDAO(dbTesting.getSessionFactory());
+
+        final Discipline d1 = new Discipline("Programação 1", "CC001", 80, 0, new ArrayList<>());
+        final Discipline savedD1 = dbTesting.inTransaction(() -> dao.persist(d1));
+
+        assertNotNull(savedD1, "Falhou ao salvar uma nova Discipline");
+        assertNotNull(savedD1.getId(), "Discipline não recebeu um id ao ser criada");
+        assertEquals("CC001", savedD1.getCode(), "Code da Discipline não corresponde com o informado");
+        assertEquals("Programação 1", savedD1.getName(),
+                "Name da Discipline não corresponde com o informado");
+        assertEquals(80, (int) savedD1.getCredits(), "Credits não corresponde com o informado");
+        assertEquals(0, (int) savedD1.getRequiredCredits(), "Required Credits não corresponde com o informado");
+        assertEquals(new ArrayList<>(), savedD1.getRequiredDisciplines(), "Pré-requisitos foram associados incorretamente");
+        assertNull(savedD1.getTeacher(), "Um professor foi associado à nova Discipline");
+        assertEquals(new ArrayList<>(), savedD1.getStudents(), "Aluno(s) foi(ram) associado(s) à nova Discipline");
+
+        d1.setTeacher(new Teacher("Rodrigo", "Paes"));
+        d1.setCredits(60);
+        d1.setRequiredCredits(100);
+        List<String> preRequisites = new ArrayList<>();
+        preRequisites.add("CC002");
+        preRequisites.add("CC003");
+        d1.setRequiredDisciplines(preRequisites);
+        final Discipline updatedD1 = dbTesting.inTransaction(() -> dao.persist(d1));
+        assertNotNull(updatedD1.getTeacher(), "Professor não foi associado à Discipline");
+        assertEquals(new ArrayList<>(), updatedD1.getStudents(), "Lista de alunos foi alterada quando não deveria");
+        assertEquals(60, (int) updatedD1.getCredits(), "O valor de credits da Discipline não foi atualizado corretamente");
+        assertEquals(100, (int) updatedD1.getRequiredCredits(), "Required credits não foi atualizado corretamente");
+        assertEquals(2, updatedD1.getRequiredDisciplines().size(),
+                "Pré-requisitos não foram atualizados corretamente");
+
+        dbTesting.inTransaction(() -> dao.delete(updatedD1));
+        assertNull(dbTesting.inTransaction(() -> dao.get(d1.getId())), "Discipline não foi removida");
+        assertEquals(0, dbTesting.inTransaction(dao::getAll).size(),
+                "Discipline não foi removido da listagem total de Disciplines");
+
+        final Discipline d2 = new Discipline("Programação 2", "CC002", 0, 0, new ArrayList<>());
+        final Discipline d3 = new Discipline("Teste de Software", "CC003", 0, 0, new ArrayList<>());
+        final Discipline savedD2 = dbTesting.inTransaction(() -> dao.persist(d2));
+        final Discipline savedD3 = dbTesting.inTransaction(() -> dao.persist(d3));
+
+        assertNotNull(savedD2, "Falhou ao salvar uma segunda nova Discipline");
+        assertNotNull(savedD3, "Falhou ao salvar uma terceira nova Discipline");
+        assertEquals(2, dbTesting.inTransaction(dao::getAll).size(),
+                "Nem todas as novas Disciplines estão aparecendo na listagem total de Disciplines");
+        dbTesting.inTransaction(() -> dao.delete(d2));
+        assertNull(dbTesting.inTransaction(() -> dao.get(d2.getId())), "Discipline não foi removida");
+        assertEquals(1, dbTesting.inTransaction(dao::getAll).size(),
+                "Discipline não foi removido da listagem total de Disciplines");
     }
 }

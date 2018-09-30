@@ -39,6 +39,15 @@ public class Discipline {
     @ManyToMany(cascade = CascadeType.ALL)
     List<Student> students;
 
+    public Discipline(String name, String code, Integer credits, Integer requiredCredits, List<String> requiredDisciplines) {
+        this.name = name;
+        this.code = code;
+        this.credits = credits;
+        this.requiredCredits = requiredCredits;
+        this.requiredDisciplines = requiredDisciplines;
+        this.students = new ArrayList<>();
+    }
+
     public Discipline(DisciplineDTO entity) {
         this.code = entity.code;
         this.name = entity.name;
@@ -57,6 +66,7 @@ public class Discipline {
         } else {
             this.requiredDisciplines = new ArrayList<>();
         }
+        this.students = new ArrayList<>();
     }
 
     public void update(DisciplineDTO entity) {

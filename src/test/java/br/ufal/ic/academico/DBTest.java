@@ -1,6 +1,7 @@
 package br.ufal.ic.academico;
 
 import br.ufal.ic.academico.models.course.Course;
+import br.ufal.ic.academico.models.course.CourseDTO;
 import br.ufal.ic.academico.models.department.Department;
 import br.ufal.ic.academico.models.department.DepartmentDAO;
 import br.ufal.ic.academico.models.discipline.Discipline;
@@ -9,6 +10,7 @@ import br.ufal.ic.academico.models.person.student.StudentDAO;
 import br.ufal.ic.academico.models.person.teacher.Teacher;
 import br.ufal.ic.academico.models.person.teacher.TeacherDAO;
 import br.ufal.ic.academico.models.secretary.Secretary;
+import br.ufal.ic.academico.models.secretary.SecretaryDAO;
 import io.dropwizard.testing.junit5.DAOTestExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 
@@ -160,5 +162,42 @@ class DBTest {
         assertNull(dbTesting.inTransaction(() -> dao.get(d2.getId())), "Department não foi removido");
         assertEquals(1, dbTesting.inTransaction(dao::getAll).size(),
                 "Department não foi removido da listagem total de Departments");
+    }
+
+    @Test
+    void secretaryCRUD() {
+        SecretaryDAO dao = new SecretaryDAO(dbTesting.getSessionFactory());
+
+        final Secretary s1 = new Secretary("GRADUATION");
+        final Secretary savedS1 = dbTesting.inTransaction(() -> dao.persist(s1));
+
+        assertNotNull(savedS1, "Falhou ao salvar uma nova Secretary");
+        assertNotNull(savedS1.getId(), "Secretary não recebeu um id ao ser criada");
+        assertEquals("GRADUATION", savedS1.getType(), "Tipo da Secretary não corresponde com o informado (GRADUATION)");
+        assertEquals(0, savedS1.getCourses().size(), "Secretary foi criada com Course(s) associado(s)");
+
+        s1.addCourse(new CourseDTO());
+        final Secretary updatedS1 = dbTesting.inTransaction(() -> dao.persist(s1));
+        assertEquals("GRADUATION", updatedS1.getType().toString(), "Tipo da Secretary foi alterado");
+        assertEquals(1, updatedS1.getCourses().size(), "Curso associado não foi salvo corretamente");
+
+        dbTesting.inTransaction(() -> dao.delete(updatedS1));
+        assertNull(dbTesting.inTransaction(() -> dao.get(s1.getId())), "Secretary não foi removida");
+        assertEquals(0, dbTesting.inTransaction(dao::getAll).size(),
+                "Secretary não foi removida da listagem total de Secretaries");
+
+        final Secretary s2 = new Secretary("POST-GRADUATION");
+        final Secretary s3 = new Secretary("GRADUATION");
+        final Secretary savedS2 = dbTesting.inTransaction(() -> dao.persist(s2));
+        final Secretary savedS3 = dbTesting.inTransaction(() -> dao.persist(s3));
+
+        assertNotNull(savedS2, "Falhou ao salvar uma segunda nova Secretary");
+        assertNotNull(savedS3, "Falhou ao salvar uma terceira nova Secretary");
+        assertEquals(2, dbTesting.inTransaction(dao::getAll).size(),
+                "Nem todas as novas Secretaries estão aparecendo na listagem total de Secretaries");
+        dbTesting.inTransaction(() -> dao.delete(s2));
+        assertNull(dbTesting.inTransaction(() -> dao.get(s2.getId())), "Secretary não foi removida");
+        assertEquals(1, dbTesting.inTransaction(dao::getAll).size(),
+                "Secretary não foi removida da listagem total de Secretaries");
     }
 }

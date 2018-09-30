@@ -27,6 +27,11 @@ public class Secretary {
         this.courses = new ArrayList<>();
     }
 
+    public Secretary(String type) {
+        this.type = type.toUpperCase().equals("POST-GRADUATION") ? "POST-GRADUATION" : "GRADUATION";
+        this.courses = new ArrayList<>();
+    }
+
     public Course addCourse(CourseDTO entity) {
         Course newCourse = new Course(entity);
         if (this.courses.add(newCourse)) {

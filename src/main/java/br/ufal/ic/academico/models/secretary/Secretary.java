@@ -32,13 +32,8 @@ public class Secretary {
         this.courses = new ArrayList<>();
     }
 
-    public Course addCourse(CourseDTO entity) {
-        Course newCourse = new Course(entity);
-        if (this.courses.add(newCourse)) {
-            return newCourse;
-        } else {
-            return null;
-        }
+    public boolean addCourse(Course course) {
+        return this.courses.add(course);
     }
 
     public void deleteCourse(Course c) {

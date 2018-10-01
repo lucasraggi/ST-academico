@@ -97,11 +97,12 @@ public class SecretaryResources {
             return Response.status(404).entity("Secretary not found.").build();
         }
 
-        Course c = s.addCourse(entity);
-        if (c != null) {
+        Course c = new Course(entity);
+        if (s.addCourse(c)) {
             courseDAO.persist(c);
+            return Response.ok(new SecretaryDTO(secretaryDAO.persist(s))).build();
         }
-        return Response.ok(new SecretaryDTO(secretaryDAO.persist(s))).build();
+        return Response.status(400).build();
     }
 
     private List<SecretaryDTO> secretaryListToDTOList(List<Secretary> list) {

@@ -46,8 +46,11 @@ public class Student extends Person {
         super.update(entity.firstName, entity.lastName, "STUDENT");
     }
 
-    public void completeDiscipline(Discipline discipline) {
-        this.credits += discipline.getCredits();
-        this.completedDisciplines.add(discipline.getCode());
+    public boolean completeDiscipline(Discipline discipline) {
+        if (discipline.removeStudent(this)) {
+            this.credits += discipline.getCredits();
+            return this.completedDisciplines.add(discipline.getCode());
+        }
+        return false;
     }
 }

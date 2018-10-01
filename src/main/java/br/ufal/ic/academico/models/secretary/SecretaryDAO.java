@@ -2,9 +2,11 @@ package br.ufal.ic.academico.models.secretary;
 
 import br.ufal.ic.academico.models.GeneralDAO;
 import br.ufal.ic.academico.models.department.Department;
+import br.ufal.ic.academico.models.department.DepartmentDAO;
 import org.hibernate.SessionFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SecretaryDAO extends GeneralDAO<Secretary> {
     public SecretaryDAO(SessionFactory sessionFactory) {
@@ -21,7 +23,8 @@ public class SecretaryDAO extends GeneralDAO<Secretary> {
             return null;
         }
 
-        String query = "select D from Department D, Secretary S where D." + secretary.getType().toLowerCase() + ".id = S.id";
-        return (Department) currentSession().createQuery(query).list().get(0);
+        String type = secretary.getType().equals("GRADUATION") ? "graduation" : "postGraduation";
+        String query = "select D from Department D where D." + type + ".id = " + secretary.getId();
+        return (Department) currentSession().createQuery(query).uniqueResult();
     }
 }

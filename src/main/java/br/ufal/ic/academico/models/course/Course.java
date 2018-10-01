@@ -43,7 +43,7 @@ public class Course {
         this.disciplines.add(discipline);
     }
 
-    public void deleteDiscipline(Discipline d) {
-        this.disciplines.remove(d);
+    public boolean deleteDiscipline(Discipline d) {
+        return this.disciplines.remove(d);
     }
 }

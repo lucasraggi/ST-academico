@@ -17,7 +17,7 @@ public class CourseDAO extends GeneralDAO<Course> {
     }
 
     public Secretary getSecretary(Course course) {
-        ArrayList<Secretary> secretaries = (ArrayList<Secretary>)  currentSession().createQuery("from Secretary").list();
+        ArrayList<Secretary> secretaries = (ArrayList<Secretary>) currentSession().createQuery("from Secretary").list();
         for (Secretary s : secretaries) {
             for (Course c : s.getCourses()) {
                 if (c.getId().equals(course.getId())) {
